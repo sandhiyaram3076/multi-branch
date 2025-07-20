@@ -1,1 +1,40 @@
-
+pipeline {
+    agent any
+    stages {
+        stage('checkout scm'){
+            steps {
+                echo "checking out from branch ${env.BRANCH_NAME}"
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building the application'
+            }
+        }
+        stage('Deploy'){
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'dev'){
+                        echo 'Deploying to dev env..'
+                        // sh 'deploy-dev.sh'
+                    } else if (env.BRANCH_NAME == 'qa'){
+                        echo 'Deploying to qa env..'
+                        // sh 'deploy-qa.sh'
+                    } else if (env.BRANCH_NAME == 'master'){
+                        echo 'Deploying to prod env..'
+                        // sh 'deploy-prod.sh'
+                    } else {
+                        echo "No deploy to any env"
+                    }
+                }
+            }
+        }
+        stage('Test'){
+            steps {
+                echo "Running tests"
+                // sh 'run-tests.sh'
+            }
+        }
+    }
+}
